@@ -1,0 +1,56 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "esnext",
+    "baseUrl": "./",
+    "moduleResolution": "node",
+    "jsx": "preserve",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "@views/*": [
+        "src/views/*"
+      ],
+      "@components/*": [
+        "src/components/*"
+      ],
+      "@constants/*": [
+        "src/constants/*"
+      ],
+      "@assets/*": [
+        "src/assets/*"
+      ],
+      "@styles/*": [
+        "src/styles/*"
+      ],
+      "@store/*": [
+        "src/store/*"
+      ],
+      "@plugins/*":[
+        "src/plugins/*"
+      ],
+      "@locales/*":[
+        "src/locales/*"
+      ],
+      "@layouts/*":[
+        "src/layouts/*"
+      ],
+      "@router/*":[
+        "src/router/*"
+      ],
+      "@modals/*":[ 
+        "src/modals/*"
+      ],
+      "@mixins/*":[
+        "src/mixins/*"
+      ],
+    },
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable",
+      "scripthost"
+    ]
+  }
+}

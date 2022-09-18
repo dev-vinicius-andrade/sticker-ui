@@ -1,0 +1,142 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"terminal.integrated.cwd": "${workspaceFolder}/client",
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"type": "chrome",
+				"request": "launch",
+				"name": "launch:chrome",
+				"url": "http://localhost:8080",
+				"webRoot": "${workspaceFolder}/client/src",
+				"sourceMaps": true,
+				"sourceMapPathOverrides": {
+					 "webpack:///src/*": "${webRoot}/*",
+					
+				},
+				"env": {
+					"CLIENT_RELEASE_PATH":"${workspaceFolder}/dist",
+				},
+				"preLaunchTask": "serve"
+			},
+			{
+				"type": "chrome",
+				"request": "launch",
+				"name": "docker-compose:launch:chrome",
+				"url": "http://localhost:8080",
+				"webRoot": "${workspaceFolder}/code/src",
+				"sourceMaps": true,
+				"sourceMapPathOverrides": {
+					 "webpack:///src/*": "${webRoot}/*",
+				},
+				"postDebugTask": "docker:compose:down"
+			},
+			{
+				"name": "docker:attach:node",
+				"type": "node",
+				"request": "attach",
+				"port": 9229,
+				"address": "localhost",
+				"localRoot": "${workspaceFolder}/server",
+				"remoteRoot": "/src/server",
+				"postDebugTask": "docker:compose:down"
+			}
+		], 
+		"compounds": [
+			{
+				"name": "Docker Compose",
+				"configurations": ["docker:attach:node","docker-compose:launch:chrome"],
+				"preLaunchTask": "docker:compose:up",
+				"stopAll": true
+			}
+		]
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "npm:install:client",
+				"type": "shell",
+				"command": "npm install",
+				"isBackground": true,
+				"linux": {
+					"command": "if [ -d ${workspaceFolder}/client/node_modules ]; then npm install fi"
+				},
+				"windows": {
+					"command": "cmd",
+					"args": ["/C","if not exist ${workspaceFolder}/client/node_modules  npm install"],
+				},
+				"options": {"cwd":"${workspaceFolder}/client"},
+			},
+			{
+				"label": "npm:install:server",
+				"type": "shell",
+				"command": "npm install",
+				"isBackground": true,
+				"linux": {
+					"command": "if [ -d ${workspaceFolder}/server/node_modules ]; then npm install fi"
+				},
+				"windows": {
+					"command": "cmd",
+					"args": ["/C","if not exist ${workspaceFolder}/server/node_modules  npm install"],
+				},
+				"options": {"cwd":"${workspaceFolder}/server"},
+			},
+			{
+				"label": "serve",
+				"type": "shell",
+				"command": "npm run serve",
+				"options": {"cwd":"${workspaceFolder}/client"},
+				"isBackground": true,
+				"dependsOn": ["npm:install:client"],
+				"problemMatcher": [{
+					"base": "$tsc-watch",
+					"background": {
+						"activeOnStart": true,
+						"beginsPattern": "Starting development server",
+						"endsPattern": "Compiled successfully"
+					}
+				}],
+			},
+			{
+				"type": "docker-compose",
+				"label": "docker:compose:up",
+				"dependsOn": ["npm:install:client","npm:install:server"],
+				"isBackground": false,
+				"dockerCompose": {
+				  "up": {
+					"detached": true,
+					"build": true,
+					"customOptions": "",
+					"services": [
+					  "site",
+					]
+				  },
+				  "files": [
+					"${workspaceFolder}/docker-compose.yaml"
+				  ],
+				},
+				"problemMatcher": []
+			},
+			{
+				"type": "docker-compose",
+				"label": "docker:compose:down",
+				"dockerCompose": {
+					"down": {
+					"removeVolumes":false
+					},
+					"files": [
+					"${workspaceFolder}/docker-compose.yaml"
+					]
+				},      
+			},
+		]
+	}
+}

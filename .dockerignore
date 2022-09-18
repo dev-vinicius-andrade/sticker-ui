@@ -1,0 +1,6 @@
+**/Dockerfile
+**/.dockerignore
+**/.gitignore
+**/*.code-workspace
+**/README.md
+**/node_modules

@@ -1,0 +1,23 @@
+version: '3.9'
+services:
+  site: 
+    image: codescovery/orbyz-site-vue:debug
+    build: 
+      context: .
+      target: debug
+    ports:
+      - "8080:80"
+    volumes:
+      - ./client/dist:/app/client
+      - ./client:/src/client
+      - ./server:/src/server:ro
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - DEBUG_ENVIRONMENT_NAME=development
+      - CLIENT_RELEASE_PATH=/app/client
+      - CLIENT_RELEASE_INDEX_PATH=/app/client/index.html
+      - ENVIRONMENT_NAME_PREFIX=ENV_
+      # - CHOKIDAR_USEPOLLING=true
+      # - PORT=80
+    # entrypoint: sleep infinity
